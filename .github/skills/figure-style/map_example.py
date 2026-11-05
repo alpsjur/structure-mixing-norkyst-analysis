@@ -10,7 +10,7 @@ import xarray as xr
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
-MASKS = Path("masks/windfarm_masks.nc")
+MASKS = Path("files/windfarm_masks.nc")
 TURBINES = Path.home() / "structure-mixing-grid-utils" / "turbine_coordinates"
 
 

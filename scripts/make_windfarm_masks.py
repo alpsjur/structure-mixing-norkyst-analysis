@@ -20,7 +20,7 @@ from scipy.spatial.distance import cdist
 UTILS = Path.home() / "structure-mixing-grid-utils"
 GRID = UTILS / "grid_files" / "norkyst_grd_v31.nc"
 TURBINES = UTILS / "turbine_coordinates"
-OUT = Path("masks/windfarm_masks.nc")
+OUT = Path("files/windfarm_masks.nc")
 MAX_DIST_DEG = 0.1
 LINK_CELLS = 5
 MAX_CLOSING = 20
