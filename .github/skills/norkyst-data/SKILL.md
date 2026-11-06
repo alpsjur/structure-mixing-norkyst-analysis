@@ -25,6 +25,9 @@ Runs have different numbers of files (some may still be running). Check with
 - `norkyst_his_NNNN.nc`: 9 records per file (3-hourly), ~35-39 GB. Adds `AKs, tke, gls, Uwind, Vwind`. Use for TKE/mixing.
 - Match records by `ocean_time` (seconds since 1970, proleptic_gregorian), not by file number.
 
+## Precomputed products
+Monthly mean-anomaly and mean files live in `.../structure_mixing/processed/`; see the `processed-data` skill and use them instead of recomputing from raw avg files when possible.
+
 ## Grid (ROMS, staggered)
 - Size: eta_rho=1148, xi_rho=2747, 40 `s_rho` levels, 41 `s_w` levels.
 - `u` is on (eta_u, xi_u), `v` on (eta_v, xi_v). Interpolate to rho points before computing speed.
@@ -33,7 +36,7 @@ Runs have different numbers of files (some may still be running). Check with
 - Use `mask_rho` to exclude land.
 
 ## Wind farm masks
-- `masks/windfarm_masks.nc` (repo root, zlib-compressed; git-ignored like all `*.nc`, so regenerate it rather than committing it) holds, for each farm, on `(eta_rho, xi_rho)` with `lon_rho`/`lat_rho`:
+- `files/windfarm_masks.nc` (repo root; git-ignored like all `*.nc`, so regenerate it rather than committing it) holds, for each farm, on `(eta_rho, xi_rho)` with `lon_rho`/`lat_rho`:
   - `<farm>`: int8 0/1 union of the farm's sectors.
   - `<farm>_sectors`: int8 sector labels 1..n (0 outside), ordered south to north by mean eta.
   Farms: `Nordavind_C` (2 sectors), `Nordavind_D` (2), `Nordvest_C` (4), `Sorvest_F` (3), `Vestavind_B` (4), `Vestavind_F` (5). Use e.g. `da.where(masks["Nordvest_C"] == 1)`.
@@ -43,7 +46,7 @@ Runs have different numbers of files (some may still be running). Check with
 - `Nordavind_CD.txt` holds two sub-areas, split at 71.45 N: north = C, south = D.
 
 ## Gotchas
-- **Always set `HDF5_USE_FILE_LOCKING=FALSE`** before opening files. The read-only filesystem otherwise gives a misleading `NetCDF: HDF error`.
+- When running in Copilot sessions,  set `HDF5_USE_FILE_LOCKING=FALSE` before opening files. The read-only filesystem otherwise gives a misleading `NetCDF: HDF error`. This does not apply when running on HPC.
 - Files are huge: open lazily (`xr.open_dataset` / `xr.open_mfdataset` with chunks), select variables and subregions early, never `.load()` full 3D fields. In Copilot sessions (about 15 GB RAM) this is a hard limit; on HPC it is a performance concern only.
 - Use `decode_times=False` and decode `ocean_time` manually if decoding is slow.
 

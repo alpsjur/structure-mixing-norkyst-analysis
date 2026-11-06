@@ -23,8 +23,8 @@ Helpers `add_farm_outlines` and `add_turbines` are in [map_example.py](map_examp
 - Outlines and turbines can be used together or separately.
 
 ## Colormaps
-- Sequential fields (PEA, current speed, TKE): `cmocean` sequential, e.g. `cmo.deep`, `cmo.thermal`, `cmo.haline`. Default `cmo.deep`.
-- Anomalies (run minus `wakeref`): diverging map centred on 0 (`RdBu_r` or `cmo.balance`) with a symmetric range (`vmin=-vmax`).
+- Sequential fields (PEA, current speed, TKE): `cmocean` sequential, e.g. `cmo.deep`, `cmo.thermal`, `cmo.haline`. 
+- Anomalies (run minus `wakeref`): diverging map centred on 0 (e.g. `RdBu_r` or `cmo.balance`) with a symmetric range (`vmin=-vmax`).
 
 ## Output
 - Save to `figures/` (create if missing) as PNG at 300 dpi and PDF.
