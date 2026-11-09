@@ -26,3 +26,9 @@ Location: `/lustre/storeB/project/nwp/havvind/hav/structure_mixing/processed/` (
 - The anomaly can be computed afterwards: `pea_run.pea - pea_wakeref.pea`, aligned on `ocean_time`. Then average over time, weighting by number of days. 
 
 
+
+## Daily depth-range mean current files: `current_<run>_<YYYY-MM>.nc`
+- Live in subfolder `current/` within the processed data directory.
+- Made by `scripts/make_monthly_current.py` using `analysis/current.py`, one file per run (incl. wakeref) and month.
+- Two depth ranges below the surface: `0_25` (semisub extent) and `25_130` (down to spar extent). Per range: `ubar_<r>`, `vbar_<r>` (mean u, v at rho points, not rotated), `speed_<r>` (mean of sqrt(u2+v2)), `H_<r>` (water thickness inside the range, m; 0 where shallower, then means are NaN). Dims `(ocean_time, eta_rho, xi_rho)`, one record per day. Attributes: `n_days`, `ranges`, `source_files`.
+- Mean over 0-130 m: `(m1*H1 + m2*H2) / (H1 + H2)`. Anomalies of `speed` (nonlinear): difference per day vs wakeref, then average.

@@ -18,6 +18,7 @@ Open data with the `norkyst-data` skill; precomputed files are in `processed-dat
 
 ## Current speed
 - Interpolate `u` and `v` to rho points, then `speed = sqrt(u**2 + v**2)`.
+- Depth-range means (0-25 m, 25-130 m): `analysis/current.py` (`current(ds, ranges, tidx)`). Exact in the terrain-following grid: layer thickness from `z_w` clipped to the range, thickness-weighted mean, thickness `H` stored so ranges can be combined. Precomputed files: see `processed-data`.
 
 ## Surface TKE
 - `tke` is on `s_w` in `his` files only. Surface = top interface (last `s_w` index).
