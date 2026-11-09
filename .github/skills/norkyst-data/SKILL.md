@@ -20,13 +20,19 @@ All three runs include the atmospheric wake. Differences from `wakeref` therefor
 Runs have different numbers of files (some may still be running). Check with
 `ls` and use the common time range before comparing runs.
 
+## Structure parameters (per wind turbine)
+| | # Cylinders | Depth extent | Cylinder diameter |
+|---|---|---|---|
+| `semisub` | 4 | 25 m | 12.375 m |
+| `spar` | 1 | 130 m | 20 m |
+
 ## Files
 - `norkyst_avg_NNNN.nc`: 1 time record per file, ~3.6 GB. Vars: `u, v, w, omega, temp, salt, zeta, ubar, vbar`. No turbulence fields.
 - `norkyst_his_NNNN.nc`: 9 records per file (3-hourly), ~35-39 GB. Adds `AKs, tke, gls, Uwind, Vwind`. Use for TKE/mixing.
 - Match records by `ocean_time` (seconds since 1970, proleptic_gregorian), not by file number.
 
 ## Precomputed products
-Monthly mean-anomaly and mean files live in `.../structure_mixing/processed/`; see the `processed-data` skill and use them instead of recomputing from raw avg files when possible.
+Precomputed anomalies, mean and other derived products (e.g. pea) live in `.../structure_mixing/processed/`; see the `processed-data` skill and use them instead of recomputing from raw avg files when possible.
 
 ## Grid (ROMS, staggered)
 - Size: eta_rho=1148, xi_rho=2747, 40 `s_rho` levels, 41 `s_w` levels.
@@ -34,6 +40,7 @@ Monthly mean-anomaly and mean files live in `.../structure_mixing/processed/`; s
 - `tke, AKs, gls, w` are on `s_w` (interfaces); `temp, salt, u, v` on `s_rho`.
 - Depths are terrain-following. Compute z from `Vtransform, Vstretching, theta_s, theta_b, Tcline, hc, Cs_r, Cs_w, h, zeta` (all in the files); never assume fixed depths.
 - Use `mask_rho` to exclude land.
+
 
 ## Wind farm masks
 - `files/windfarm_masks.nc` (repo root; git-ignored like all `*.nc`, so regenerate it rather than committing it) holds, for each farm, on `(eta_rho, xi_rho)` with `lon_rho`/`lat_rho`:

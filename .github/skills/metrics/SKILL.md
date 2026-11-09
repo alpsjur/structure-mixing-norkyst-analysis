@@ -22,18 +22,9 @@ Open data with the `norkyst-data` skill; precomputed files are in `processed-dat
 ## Surface TKE
 - `tke` is on `s_w` in `his` files only. Surface = top interface (last `s_w` index).
 
-## Structure parameters (per turbine)
-| | Cylinders | Depth extent | Cylinder diameter |
-|---|---|---|---|
-| `semisub` | 4 | 25 m | 12.375 m |
-| `spar` | 1 | 130 m | 20 m |
-
 ## Anomalies
 - Response = run minus `wakeref`: `spar - wakeref`, `semisub - wakeref`, on identical timestamps.
 - **Linear vs nonlinear:**
   - Linear quantities (`temp, salt, u, v, w, zeta`): mean of daily anomalies = anomaly of means, so the precomputed monthly anomalies are exact. Fixed `s` levels sit at slightly different depths in the two runs where `zeta` differs: interpolate to fixed z if depth-sensitive.
   - Nonlinear quantities (speed, PEA, density, kinetic energy, TKE magnitude): compute per timestamp, difference, then average. 
-
-## Open questions (do not assume; ask the user)
-- Response vs distance: how to define distance, and whether to use only downstream distance. "Downstream" definition is undecided (candidates: mean current direction).
 
