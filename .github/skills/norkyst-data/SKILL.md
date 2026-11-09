@@ -43,7 +43,7 @@ Precomputed anomalies, mean and other derived products (e.g. pea) live in `.../s
 
 
 ## Wind farm masks
-- `files/windfarm_masks.nc` (repo root; git-ignored like all `*.nc`, so regenerate it rather than committing it) holds, for each farm, on `(eta_rho, xi_rho)` with `lon_rho`/`lat_rho`:
+- `.../structure_mixing/masks/windfarm_masks.nc` holds, for each farm, on `(eta_rho, xi_rho)` with `lon_rho`/`lat_rho`:
   - `<farm>`: int8 0/1 union of the farm's sectors.
   - `<farm>_sectors`: int8 sector labels 1..n (0 outside), ordered south to north by mean eta.
   Farms: `Nordavind_C` (2 sectors), `Nordavind_D` (2), `Nordvest_C` (4), `Sorvest_F` (3), `Vestavind_B` (4), `Vestavind_F` (5). Use e.g. `da.where(masks["Nordvest_C"] == 1)`.
