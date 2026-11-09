@@ -21,9 +21,9 @@ import xarray as xr
 
 # ---- settings (override on the command line) -------------------------------
 BASE = "/lustre/storeB/project/nwp/havvind/hav/structure_mixing/experiments"
-OUTDIR = "files/test"  # small VM default; point to HPC storage for real runs
+OUTDIR = "/lustre/storeB/project/nwp/havvind/hav/structure_mixing/processed"  
 VARIABLES = ["temp", "salt", "u", "v", "w", "zeta", "ubar", "vbar"]
-ETA_SLAB = 100  # eta rows read at once; increase on HPC
+ETA_SLAB = 400  # eta rows read at once; increase on HPC
 # -----------------------------------------------------------------------------
 
 
@@ -53,7 +53,7 @@ def main():
     p.add_argument("--max-files", type=int, default=None,
                    help="use only the first N files of the month (testing)")
     p.add_argument("--eta-slab", type=int, default=ETA_SLAB)
-    p.add_argument("--outdir", default=OUTDIR)
+    p.add_argument("--outdir", default=OUTDIR+"/anom")
     a = p.parse_args()
 
     run_t, ref_t = file_times(a.run), file_times(a.ref)

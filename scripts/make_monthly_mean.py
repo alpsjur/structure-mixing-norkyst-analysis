@@ -32,7 +32,7 @@ def main():
     p.add_argument("--max-files", type=int, default=None,
                    help="use only the first N files of the month (testing)")
     p.add_argument("--eta-slab", type=int, default=ETA_SLAB)
-    p.add_argument("--outdir", default=OUTDIR)
+    p.add_argument("--outdir", default=OUTDIR+"/mean")
     a = p.parse_args()
 
     run_t = file_times(a.run)

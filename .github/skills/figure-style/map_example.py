@@ -58,14 +58,15 @@ def add_turbines(ax, files=None):
                    transform=ccrs.PlateCarree(), zorder=5)
 
 
-def plot_map(da, label, fname, cmap=cmo.deep, vmin=None, vmax=None):
-    """da: 2D DataArray with lon_rho/lat_rho coordinates (NaN on land)."""
-    fig, ax = plt.subplots(
-        figsize=(10, 10), subplot_kw={"projection": ccrs.NorthPolarStereo()}
-    )
+def draw_map(ax, da, cmap=cmo.matter, vmin=None, vmax=None, norm=None):
+    """Draw one map panel on a NorthPolarStereo axis; returns the pcolormesh.
+
+    da: 2D DataArray with lon_rho/lat_rho coordinates (NaN on land).
+    Pass either vmin/vmax or a matplotlib `norm` (e.g. LogNorm), not both.
+    """
     pcm = ax.pcolormesh(
         da["lon_rho"], da["lat_rho"], da,
-        cmap=cmap, vmin=vmin, vmax=vmax, shading="auto",
+        cmap=cmap, vmin=vmin, vmax=vmax, norm=norm, shading="auto",
         transform=ccrs.PlateCarree(), zorder=1, rasterized=True,
     )
     ax.add_feature(cfeature.LAND, facecolor="lightgray", zorder=2)
@@ -87,11 +88,24 @@ def plot_map(da, label, fname, cmap=cmo.deep, vmin=None, vmax=None):
     )
     gl.top_labels = False
     gl.right_labels = False
+    return pcm
 
-    fig.colorbar(pcm, ax=ax, orientation="vertical", label=label)
 
-    out = Path("figures")
-    out.mkdir(exist_ok=True)
-    fig.savefig(out / f"{fname}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(out / f"{fname}.pdf", bbox_inches="tight")
+def save_fig(fig, name, subfolder):
+    """Save PNG (300 dpi) and PDF to figures/<subfolder>/ (created if missing)."""
+    out = Path("figures") / subfolder
+    out.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out / f"{name}.png", dpi=300, bbox_inches="tight")
+    fig.savefig(out / f"{name}.pdf", bbox_inches="tight")
+
+
+def plot_map(da, label, fname, cmap=cmo.matter, vmin=None, vmax=None, norm=None, extend="neither",
+             subfolder="scratch"):
+    """Single-panel map saved to figures/<subfolder>/<fname>.{png,pdf} (`scratch` for quick looks)."""
+    fig, ax = plt.subplots(
+        figsize=(10, 10), subplot_kw={"projection": ccrs.NorthPolarStereo()}
+    )
+    pcm = draw_map(ax, da, cmap=cmap, vmin=vmin, vmax=vmax, norm=norm)
+    fig.colorbar(pcm, ax=ax, orientation="vertical", label=label, extend=extend)
+    save_fig(fig, fname, subfolder)
     return fig, ax

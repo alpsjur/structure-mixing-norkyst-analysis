@@ -23,13 +23,16 @@ Helpers `add_farm_outlines` and `add_turbines` are in [map_example.py](map_examp
 - Outlines and turbines can be used together or separately.
 
 ## Colormaps
-- Sequential fields (PEA, current speed, TKE): `cmocean` sequential, e.g. `cmo.deep`, `cmo.thermal`, `cmo.haline`. 
-- Anomalies (run minus `wakeref`): diverging map centred on 0 (e.g. `RdBu_r` or `cmo.balance`) with a symmetric range (`vmin=-vmax`).
+- Bathymetry / depth: `cmo.deep`.
+- PEA (full fields, not differences): `cmo.matter` on a log scale, `LogNorm(vmin=1, vmax=1000)` (J m-3) with `extend="both"`; PEA is ~0 or slightly negative (numerical noise) in mixed columns, so clip the data first (`da.clip(min=1)`), otherwise values <= 0 are masked and show as white holes. Use the same norm for all runs and months so maps are comparable. Pass `norm=` (not `vmin`/`vmax`) to `plot_map`.
+- Other sequential fields (current speed, TKE): `cmocean` sequential, e.g. `cmo.thermal`, `cmo.haline`; not `deep` or `matter`, which are reserved for bathymetry and PEA.
+- Anomalies (run minus `wakeref`): diverging map centred on 0 (`cmo.balance`) with a symmetric range (`vmin=-vmax`). Set `vmax` to the 99th percentile of `|anomaly|` (`np.nanpercentile(np.abs(a), 99)`), not the maximum, so a few extreme cells (eddies) do not wash out the pattern. Use a separate `vmax` per map (anomaly magnitude grows over time, so a shared scale makes early days look blank); use a shared `vmax` only when maps are meant to be compared in magnitude.
 
 ## Output
-- Save to `figures/` (create if missing) as PNG at 300 dpi and PDF.
+- Save to `figures/<subfolder>/` as PNG at 300 dpi and PDF (`save_fig` in `map_example.py` creates the folder). Subfolders by topic: `grid` (bathymetry, wind-farm layout), `pea` (potential energy anomaly); add new ones per variable/topic (e.g. `currents`, `tke`). No figures directly in `figures/`.
+- Multi-panel maps: one `draw_map` per panel on `plt.subplots(..., subplot_kw={"projection": ccrs.NorthPolarStereo()})`; panels that show the same quantity on the same scale share one vertical colorbar (`fig.colorbar(pcm, ax=[ax1, ax2])`), a difference panel gets its own.
 - Width 8 cm (single column) or 17 cm (double column) when the figure is for the paper; quick-look figures may be larger.
-- Name: `<variable>_<run>_<period>.png`, e.g. `pea_spar-minus-wakeref_2022-07.png`.
+- Name: `<variable>_<run>_<period>.png`, e.g. `figures/pea/pea_spar_2022-07.png` (for 3-panel experiment / wakeref / difference figures); single-field maps as `<variable>_<run>_<period>`.
 
 ## Not yet decided
 Fonts, wind-farm name labels on maps, panel labelling, and journal style. Ask the user rather than inventing.
