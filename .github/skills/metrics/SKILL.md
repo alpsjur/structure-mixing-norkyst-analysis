@@ -43,6 +43,9 @@ This file contains decisions for *how* to compute things.
 - Refers to the combination of speed and velocity.
 - Implementation: `analysis/current.py`. Land/missing `u`, `v` count as zero when interpolating to rho points; results are masked with `mask_rho`.
 
+### Current 
+- Refers to the combination of speed and velocity
+
 ### TKE
 - `tke` is on `s_w` in the raw `his` files (not in `avg` files or processed files).
 - No precomputed TKE products yet.
