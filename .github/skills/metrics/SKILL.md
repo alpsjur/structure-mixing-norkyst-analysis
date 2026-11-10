@@ -39,6 +39,9 @@ This file contains decisions for *how* to compute things.
 - Velocity refers to the vector (u, v).
 - Velocity is normaly saved as the mean over a depth range; calculate the mean of `u` and `v` individually over the depth range, then store as `ubar` and `vbar`. Do not rotate the vector. Thickness `H` stored so ranges can be combined. 
 
+### Current 
+- Refers to the combination of speed and velocity
+
 ### TKE
 - `tke` is on `s_w` in the raw `his` files.
 
