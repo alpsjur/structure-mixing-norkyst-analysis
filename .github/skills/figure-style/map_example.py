@@ -91,12 +91,13 @@ def draw_map(ax, da, cmap=cmo.matter, vmin=None, vmax=None, norm=None):
     return pcm
 
 
-def save_fig(fig, name, subfolder):
-    """Save PNG (300 dpi) and PDF to figures/<subfolder>/ (created if missing)."""
+def save_fig(fig, name, subfolder, PDF=False):
+    """Save PNG (300 dpi) (and PDF if PDF==True) to figures/<subfolder>/ (created if missing)."""
     out = Path("figures") / subfolder
     out.mkdir(parents=True, exist_ok=True)
     fig.savefig(out / f"{name}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(out / f"{name}.pdf", bbox_inches="tight")
+    if PDF:
+        fig.savefig(out / f"{name}.pdf", bbox_inches="tight")
 
 
 def plot_map(da, label, fname, cmap=cmo.matter, vmin=None, vmax=None, norm=None, extend="neither",
