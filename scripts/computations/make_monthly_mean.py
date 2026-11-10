@@ -7,7 +7,7 @@ grid/vertical-transform variables are copied so depths can be computed from
 the output alone.
 
 Usage (repo root):
-    python scripts/make_monthly_mean.py wakeref 2022-02 --max-files 3 --outdir files/test
+    python scripts/computations/make_monthly_mean.py wakeref 2022-02 --max-files 3 --outdir files/test
 """
 import argparse
 import os

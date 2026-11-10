@@ -9,7 +9,7 @@ Output: <outdir>/current_<run>_<YYYY-MM>.nc with dims (ocean_time, eta_rho, xi_r
 Works for any run, including wakeref.
 
 Usage (repo root):
-    python scripts/make_monthly_current.py wakeref 2022-02 --max-files 2 --outdir files/test
+    python scripts/computations/make_current.py wakeref 2022-02 --max-files 2 --outdir files/test
 """
 import argparse
 import os

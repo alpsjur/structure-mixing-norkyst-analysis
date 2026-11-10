@@ -7,7 +7,7 @@ still running) are processed from the files available; n_days records how many
 were used.
 
 Usage (repo root):
-    python scripts/make_monthly_anomalies.py spar 2022-02 --max-files 3 --outdir files/test
+    python scripts/computations/make_monthly_anomalies.py spar 2022-02 --max-files 3 --outdir files/test
 """
 import argparse
 import glob

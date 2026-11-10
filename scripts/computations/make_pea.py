@@ -8,7 +8,7 @@ Output: <outdir>/pea_<run>_<YYYY-MM>.nc with dims (ocean_time, eta_rho, xi_rho),
 variable pea in J m-3. Works for any run, including wakeref.
 
 Usage (repo root):
-    python scripts/make_monthly_pea.py wakeref 2022-02 --max-files 2 --outdir files/test
+    python scripts/computations/make_pea.py wakeref 2022-02 --max-files 2 --outdir files/test
 """
 import argparse
 import os
