@@ -46,6 +46,6 @@ This file contains decisions for *how* to compute things.
 - Response = run minus `wakeref`: `spar - wakeref`, `semisub - wakeref`, on identical timestamps.
 - Fixed `s` levels sit at slightly different depths in the two runs where `zeta` differs: interpolate to fixed z if depth-sensitive.
 - **Linear vs nonlinear:**
-  - Linear quantities (`temp, salt, u, v, w, zeta`): mean of anomalies = anomaly of means, so the precomputed monthly mean files can be used: see `processed-data`.
+  - Linear quantities (e.g. `temp, salt, u, v, w, zeta`): mean of anomalies = anomaly of means, so the precomputed monthly mean files can be used: see `processed-data`.
   - Nonlinear quantities (speed, PEA, density, kinetic energy, TKE magnitude): compute per timestamp, difference, then average (if relevant). 
 
