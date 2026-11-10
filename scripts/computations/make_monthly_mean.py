@@ -17,7 +17,7 @@ os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
 import numpy as np
 import xarray as xr
 
-from make_monthly_anomalies import BASE, ETA_SLAB, OUTDIR, eta_dim, file_times, month_of
+from scripts.computations.make_monthly_anomalies import BASE, ETA_SLAB, OUTDIR, eta_dim, file_times, month_of
 
 VARIABLES = ["temp", "salt", "u", "v", "w", "zeta", "ubar", "vbar"]
 STATIC = ["mask_rho", "mask_u", "mask_v", "h", "Vtransform", "Vstretching",

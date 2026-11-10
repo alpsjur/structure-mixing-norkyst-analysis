@@ -13,7 +13,7 @@ import numpy as np
 import xarray as xr
 
 import map_example
-from make_monthly_anomalies import file_times, month_of
+from scripts.computations.make_monthly_anomalies import file_times, month_of
 from map_example import add_farm_outlines, plot_map
 
 map_example.MASKS = Path("/lustre/storeB/project/nwp/havvind/hav/structure_mixing/masks/windfarm_masks.nc")
