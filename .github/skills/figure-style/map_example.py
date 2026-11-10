@@ -102,7 +102,7 @@ def save_fig(fig, name, subfolder, PDF=False):
 
 def plot_map(da, label, fname, cmap=cmo.matter, vmin=None, vmax=None, norm=None, extend="neither",
              subfolder="scratch"):
-    """Single-panel map saved to figures/<subfolder>/<fname>.{png,pdf} (`scratch` for quick looks)."""
+    """Single-panel map saved as PNG to figures/<subfolder>/<fname>.png (`scratch` for quick looks)."""
     fig, ax = plt.subplots(
         figsize=(10, 10), subplot_kw={"projection": ccrs.NorthPolarStereo()}
     )

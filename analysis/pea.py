@@ -1,4 +1,4 @@
-"""Potential energy anomaly (PEA) from ROMS output. See the stratification-metrics skill."""
+"""Potential energy anomaly (PEA) from ROMS output. See the metrics skill."""
 import gsw
 import numpy as np
 import xarray as xr

@@ -4,6 +4,7 @@ import sys
 
 os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
 sys.path.insert(0, ".github/skills/figure-style")
+sys.path.insert(0, ".")
 
 from pathlib import Path
 
@@ -14,11 +15,11 @@ import numpy as np
 import xarray as xr
 
 import map_example
+from analysis.io import MASKS, OUTDIR
 from map_example import add_farm_outlines, draw_map, save_fig
 
-BASE = Path("/lustre/storeB/project/nwp/havvind/hav/structure_mixing")
-map_example.MASKS = BASE / "masks" / "windfarm_masks.nc"
-MEAN_FILE = BASE / "processed" / "mean" / "mean_wakeref_2022-02.nc"  # only used for the static grid (h, mask_rho)
+map_example.MASKS = MASKS
+MEAN_FILE = Path(OUTDIR) / "mean" / "mean_wakeref_2022-02.nc"  # only used for the static grid (h, mask_rho)
 
 grid = xr.open_dataset(MEAN_FILE)
 h = grid.h.where(grid.mask_rho > 0).load()

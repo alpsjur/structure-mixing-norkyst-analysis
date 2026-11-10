@@ -1,6 +1,6 @@
 ---
 name: metrics
-description: Definitions and conventions for metrics and calculaitons in the wind-farm mixing analysis.
+description: Definitions and conventions for metrics and calculations in the wind-farm mixing analysis.
 ---
 
 # Metrics and methodological choices
@@ -28,19 +28,24 @@ This file contains decisions for *how* to compute things.
 - Use density calculated from `temp` (potential temperature) and `salt` (practical salinity). ROMS runs with `NONLIN_EOS` (Jackett & McDougall 1995, `rho0 = 1025`). Using TEOS-10 (`gsw`) is accepted: small differences are OK for PEA. If using `gsw`, convert first (`SA = gsw.SA_from_SP`, `CT = gsw.CT_from_pt`) and use pressure from rho-level depth (`gsw.p_from_z`) only for the `SA` conversion. Evaluate density at the surface pressure (`gsw.rho(SA, CT, 0)`, potential density), otherwise compressibility gives a mixed column a nonzero PEA that grows with depth. Do not pass raw `temp`/`salt` to `gsw.rho`.
 - Default integration range: the whole water column (bottom to `zeta`). Make the range a function argument (`zmin`, `zmax`) because this choice may change after seeing results.
 - Mask land with `mask_rho`.
-- Implementation: `analysis/pea.py` (`pea(ds, tidx, zmin, zmax)`), processed in eta-slabs only because the machine Copilot works on has ~15 GB RAM. The full analysis will run on HPC, where larger chunks (or dask) are fine. Reuse the function, do not rewrite it.
+- Implementation: `analysis/pea.py` (`pea(ds, tidx, zmin, zmax)`), processed in eta-slabs (slab size is a parameter). Reuse the function, do not rewrite it.
 - For precomputed files: see `processed-data`.
 
 ### Speed
 - Interpolate `u` and `v` to rho points, then `speed = sqrt(u**2 + v**2)`.
-- Speed is normaly saved as the mean over a depth range; calculate the speed for each layer, then calculate the mean over the depth range. Thickness `H` stored so ranges can be combined. 
+- Speed is saved as the mean over a depth range; calculate the speed for each layer, then calculate the mean over the depth range. Thickness `H` stored so ranges can be combined.
 
 ### Velocity
 - Velocity refers to the vector (u, v).
-- Velocity is normaly saved as the mean over a depth range; calculate the mean of `u` and `v` individually over the depth range, then store as `ubar` and `vbar`. Do not rotate the vector. Thickness `H` stored so ranges can be combined. 
+- Velocity is saved as the mean over a depth range; calculate the mean of `u` and `v` individually over the depth range, then store as `ubar` and `vbar`. Do not rotate the vector. Thickness `H` stored so ranges can be combined. 
+
+### Current 
+- Refers to the combination of speed and velocity.
+- Implementation: `analysis/current.py`. Land/missing `u`, `v` count as zero when interpolating to rho points; results are masked with `mask_rho`.
 
 ### TKE
-- `tke` is on `s_w` in the raw `his` files.
+- `tke` is on `s_w` in the raw `his` files (not in `avg` files or processed files).
+- No precomputed TKE products yet.
 
 ## Anomalies
 - Response = run minus `wakeref`: `spar - wakeref`, `semisub - wakeref`, on identical timestamps.

@@ -10,38 +10,21 @@ Usage (repo root):
     python scripts/computations/make_monthly_anomalies.py spar 2022-02 --max-files 3 --outdir files/test
 """
 import argparse
-import glob
 import os
-import re
+import sys
 
 os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
+sys.path.insert(0, ".")
 
 import numpy as np
 import xarray as xr
 
+from analysis.io import OUTDIR, eta_dim, file_times, month_of
+
 # ---- settings (override on the command line) -------------------------------
-BASE = "/lustre/storeB/project/nwp/havvind/hav/structure_mixing/experiments"
-OUTDIR = "/lustre/storeB/project/nwp/havvind/hav/structure_mixing/processed"  
 VARIABLES = ["temp", "salt", "u", "v", "w", "zeta", "ubar", "vbar"]
 ETA_SLAB = 400  # eta rows read at once; increase on HPC
 # -----------------------------------------------------------------------------
-
-
-def file_times(run):
-    """Return {ocean_time (s): path} for all avg files of a run."""
-    out = {}
-    for f in sorted(glob.glob(f"{BASE}/{run}/norkyst_avg_*.nc")):
-        with xr.open_dataset(f, decode_times=False, drop_variables=None) as ds:
-            out[float(ds.ocean_time.values[0])] = f
-    return out
-
-
-def month_of(t):
-    return str(np.datetime64(int(t), "s").astype("datetime64[M]"))
-
-
-def eta_dim(da):
-    return next(d for d in da.dims if d.startswith("eta_"))
 
 
 def main():

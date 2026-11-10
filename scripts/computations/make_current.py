@@ -23,7 +23,7 @@ import numpy as np
 import xarray as xr
 
 from analysis.current import current
-from scripts.computations.make_monthly_anomalies import OUTDIR, file_times, month_of
+from analysis.io import OUTDIR, file_times, month_of
 
 # ---- settings (override on the command line) -------------------------------
 ETA_SLAB = 400  # eta rows per slab; increase on HPC

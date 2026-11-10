@@ -11,15 +11,18 @@ Usage (repo root):
 """
 import argparse
 import os
+import sys
 
 os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
+sys.path.insert(0, ".")
 
 import numpy as np
 import xarray as xr
 
-from scripts.computations.make_monthly_anomalies import BASE, ETA_SLAB, OUTDIR, eta_dim, file_times, month_of
+from analysis.io import OUTDIR, eta_dim, file_times, month_of
 
 VARIABLES = ["temp", "salt", "u", "v", "w", "zeta", "ubar", "vbar"]
+ETA_SLAB = 400  # eta rows read at once; increase on HPC
 STATIC = ["mask_rho", "mask_u", "mask_v", "h", "Vtransform", "Vstretching",
           "theta_s", "theta_b", "Tcline", "hc", "Cs_r", "Cs_w"]
 

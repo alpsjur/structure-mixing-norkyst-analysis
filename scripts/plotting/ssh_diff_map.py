@@ -4,7 +4,7 @@ import sys
 
 os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
 sys.path.insert(0, ".github/skills/figure-style")
-sys.path.insert(0, "scripts")
+sys.path.insert(0, ".")
 
 from pathlib import Path
 
@@ -13,10 +13,10 @@ import numpy as np
 import xarray as xr
 
 import map_example
-from scripts.computations.make_monthly_anomalies import file_times, month_of
-from map_example import add_farm_outlines, plot_map
+from analysis.io import MASKS, file_times, month_of
+from map_example import add_farm_outlines, plot_map, save_fig
 
-map_example.MASKS = Path("/lustre/storeB/project/nwp/havvind/hav/structure_mixing/masks/windfarm_masks.nc")
+map_example.MASKS = MASKS
 
 # ---- settings --------------------------------------------------------------
 MONTH = "2022-02"
@@ -31,9 +31,8 @@ for t in times:
         diff = (s.zeta.isel(ocean_time=0) - w.zeta.isel(ocean_time=0)).load()
         date = str(s.ocean_time.values[0])[:10]
     vmax = float(np.nanpercentile(np.abs(diff), 99))
-    fname = f"ssh_spar-minus-wakeref_{date}"
-    fig, ax = plot_map(diff, "SSH spar - wakeref (m)", fname, cmap=cmo.balance, vmin=-vmax, vmax=vmax)
+    fig, ax = plot_map(diff, "SSH spar - wakeref (m)", f"ssh_spar-minus-wakeref_{date}",
+                       cmap=cmo.balance, vmin=-vmax, vmax=vmax, subfolder="ssh")
     add_farm_outlines(ax)
-    fig.savefig(f"figures/{fname}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(f"figures/{fname}.pdf", bbox_inches="tight")
+    save_fig(fig, f"ssh_spar-minus-wakeref_{date}", "ssh")  # re-save with outlines
     print(date, "vmax", vmax)

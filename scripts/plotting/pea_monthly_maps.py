@@ -7,6 +7,7 @@ import sys
 
 os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
 sys.path.insert(0, ".github/skills/figure-style")
+sys.path.insert(0, ".")
 
 from pathlib import Path
 
@@ -18,11 +19,11 @@ import xarray as xr
 from matplotlib.colors import LogNorm
 
 import map_example
+from analysis.io import MASKS, OUTDIR
 from map_example import add_farm_outlines, draw_map, save_fig
 
-BASE = Path("/lustre/storeB/project/nwp/havvind/hav/structure_mixing")
-map_example.MASKS = BASE / "masks" / "windfarm_masks.nc"
-PEA_DIR = BASE / "processed" / "pea"
+map_example.MASKS = MASKS
+PEA_DIR = Path(OUTDIR) / "pea"
 MONTHS = ["2022-02", "2022-03", "2022-04", "2022-05"]
 RUNS = ["spar", "semisub"]
 LOG_NORM = LogNorm(vmin=1, vmax=1000)  # J m-3; same for all runs and months

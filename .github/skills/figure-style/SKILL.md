@@ -27,9 +27,8 @@ description: Plotting conventions for the wind-farm mixing analysis.
 - Anomalies (run minus `wakeref`): diverging map centred on 0 (e.g. `cmo.balance`) with a symmetric range (`vmin=-vmax`). Set `vmax` to the 99th percentile of `|anomaly|` (`np.nanpercentile(np.abs(a), 99)`), not the maximum, so a few extreme cells do not wash out the pattern. Use a separate `vmax` per map (anomaly magnitude grows over time, so a shared scale makes early days look blank); use a shared `vmax` only when maps are meant to be compared in magnitude.
 
 ## Output
-- Save to `figures/<subfolder>/` as PNG at 300 dpi (`save_fig` in `map_example.py` creates the folder). Only save as PDF if spesifically asked to (pass `PDF=True` to `save_fig` in `map_example.py`). 
-- Use subfolders by topic: `grid` (bathymetry, wind-farm layout), `pea` (potential energy anomaly); add new ones per variable/topic (e.g. `currents`, `tke`). No figures directly in `figures/`.
+- Save to `figures/<subfolder>/` as PNG at 300 dpi (`save_fig` in `map_example.py` creates the folder). Only save as PDF if specifically asked to (pass `PDF=True` to `save_fig` in `map_example.py`). 
+- Use subfolders by topic: `grid` (bathymetry, wind-farm layout), `pea` (potential energy anomaly); `scratch` (quick looks, the `plot_map` default); add new ones per variable/topic (e.g. `currents`, `tke`). No figures directly in `figures/`.
 - Multi-panel maps: one `draw_map` per panel on `plt.subplots(..., subplot_kw={"projection": ccrs.NorthPolarStereo()})`; panels that show the same quantity on the same scale share one vertical colorbar (`fig.colorbar(pcm, ax=[ax1, ax2])`), a difference panel gets its own.
-- Width 8 cm (single column) or 17 cm (double column) when the figure is for the paper; quick-look figures may be larger.
-- Name: `<variable>_<run>_<period>.png`, e.g. `figures/pea/pea_spar_2022-07.png`.
+- Name: `<variable>_<run>_<period>.png`, e.g. `figures/pea/pea_spar_2022-07.png`. Anomalies: `<variable>_<run>-minus-wakeref_<period>.png`.
 
