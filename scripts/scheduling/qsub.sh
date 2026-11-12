@@ -42,7 +42,8 @@ for month in {02..08}; do
     # PEA calculations for specific zmax ranges
     for zmin in -50 -100 -150; do
         echo "  PEA (zmin=$zmin, zmax=0)"
-        output_dir="/lustre/storeB/project/nwp/havvind/structure_mixing/processed/pea${zmin}"
+        zmin_abs=${zmin#-}
+        output_dir="/lustre/storeB/project/nwp/havvind/structure_mixing/processed/pea${zmin_abs}"
         python3 scripts/computations/make_pea.py spar 2022-$month --zmin $zmin --zmax 0 --outdir $output_dir
         python3 scripts/computations/make_pea.py semisub 2022-$month --zmin $zmin --zmax 0 --outdir $output_dir
         python3 scripts/computations/make_pea.py wakeref 2022-$month --zmin $zmin --zmax 0 --outdir $output_dir
