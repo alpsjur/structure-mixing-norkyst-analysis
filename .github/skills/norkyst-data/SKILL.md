@@ -6,7 +6,7 @@ description: Information about Norkyst ROMS raw output from the offshore wind fa
 # Norkyst wind-farm mixing output
 
 ## Experiments / runs
-Base path: `/lustre/storeB/project/nwp/havvind/hav/structure_mixing/experiments/<run>/`
+Base path: `/lustre/storeB/project/nwp/havvind/structure_mixing/experiments/<run>/`
 (read-only for Copilot).
 
 | Run | Meaning |

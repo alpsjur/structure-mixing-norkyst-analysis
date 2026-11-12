@@ -5,7 +5,7 @@ description: Precomputed quantities. Use these instead of recomputing from raw a
 
 # Precomputed files
 
-Location: `/lustre/storeB/project/nwp/havvind/hav/structure_mixing/processed/` (sibling of `experiments/`). Open as described in `norkyst-data`.
+Location: `/lustre/storeB/project/nwp/havvind/structure_mixing/processed/` (sibling of `experiments/`). Open as described in `norkyst-data`.
 
 ## Monthly anomaly files: `anom_<run>_<YYYY-MM>.nc`
 - Live in subfolder `anom/` within the processed data directory.

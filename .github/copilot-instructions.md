@@ -13,6 +13,6 @@ Analysis of Norkyst ROMS output from offshore wind-farm ocean mixing experiments
 
 ## Architecture
 - `analysis/` holds reusable computations (e.g. `analysis/pea.py`: `pea(ds, tidx, zmin, zmax)`); `scripts/` holds runnable drivers (figures go in `figures/<topic>/`, see `figure-style`). Reuse `analysis/` functions rather than rewriting them.
-- Data live outside the repo at `/lustre/storeB/project/nwp/havvind/hav/structure_mixing/experiments/<run>/` (read-only). Grid files and turbine coordinates come from `~/structure-mixing-grid-utils/`.
+- Data live outside the repo at `/lustre/storeB/project/nwp/havvind/structure_mixing/experiments/<run>/` (read-only). Grid files and turbine coordinates come from `~/structure-mixing-grid-utils/`.
 - Wind-farm masks (`<farm>`, `<farm>_sectors`): canonical copy `.../structure_mixing/masks/windfarm_masks.nc`; `files/windfarm_masks.nc` is a local test copy (git-ignored, regenerate with `scripts/computations/make_windfarm_masks.py`). `map_example.MASKS` defaults to the local copy; plotting scripts set it to the Lustre one.
 - Domain knowledge is in `.github/skills/` (`norkyst-data`, `processed-data`, `metrics`, `figure-style`). Consult them before computing or plotting; `figure-style/map_example.py` is the reference map implementation (`plot_map`, farm outline and turbine helpers).

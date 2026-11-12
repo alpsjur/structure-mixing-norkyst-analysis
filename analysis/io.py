@@ -4,7 +4,7 @@ import glob
 import numpy as np
 import xarray as xr
 
-ROOT = "/lustre/storeB/project/nwp/havvind/hav/structure_mixing"
+ROOT = "/lustre/storeB/project/nwp/havvind/structure_mixing"
 BASE = f"{ROOT}/experiments"
 OUTDIR = f"{ROOT}/processed"
 MASKS = f"{ROOT}/masks/windfarm_masks.nc"
