@@ -24,7 +24,7 @@ from map_example import add_farm_outlines, draw_map, save_fig
 
 map_example.MASKS = MASKS
 PEA_DIR = Path(OUTDIR) / "pea"
-MONTHS = ["2022-02", "2022-03", "2022-04", "2022-05"]
+MONTHS = [f"2022-0{i}" for i in range(1,9)]
 RUNS = ["spar", "semisub"]
 LOG_NORM = LogNorm(vmin=1, vmax=1000)  # J m-3; same for all runs and months
 
