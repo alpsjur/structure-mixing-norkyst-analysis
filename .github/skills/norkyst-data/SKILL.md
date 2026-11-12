@@ -21,8 +21,10 @@ Runs may have different numbers of files (some may still be running). Check with
 `ls` and use the common time range before comparing runs.
 
 ## File types 
-- `norkyst_avg_NNNN.nc`: 1 time record per file, ~3.6 GB. Vars: `u, v, w, omega, temp, salt, zeta, ubar, vbar`. No turbulence fields.
-- `norkyst_his_NNNN.nc`: 9 records per file (3-hourly), ~35-39 GB. Adds `AKs, tke, gls, Uwind, Vwind`. Use for TKE/mixing.
+- Period: 2022-02-02 to 2022-08-31 (211 days). Full runs have 211 avg and 211 his files, one per day.
+- `norkyst_avg_NNNN.nc`: 1 time record per file (daily mean, stamped 12:00), ~3.6 GB. Vars: `u, v, w, omega, temp, salt, zeta, ubar, vbar`. No turbulence fields.
+- `norkyst_his_NNNN.nc`: 3-hourly snapshots, ~33-39 GB. File 0001 has 9 records (2022-02-02 00:00 to 02-03 00:00); later files have 8 (03:00 to 24:00 of the day). Adds `AKs, tke, gls, Uwind, Vwind`. Use for TKE/mixing.
+- `norkyst_rst.nc` (~411 GB restart file) is also in each run directory.
 - Match records by `ocean_time` (seconds since 1970, proleptic_gregorian), not by file number.
 
 ## Precomputed products
