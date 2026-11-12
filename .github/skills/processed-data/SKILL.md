@@ -22,7 +22,7 @@ Location: `/lustre/storeB/project/nwp/havvind/structure_mixing/processed/` (sibl
 ## PEA files: `pea_<run>_<YYYY-MM>.nc`
 - Live in subfolder `pea/` within the processed data directory.
 - Made by `scripts/computations/make_pea.py` using `analysis/pea.py`, one file per run and month.
-- Var `pea` (J m-3), dims `(ocean_time, eta_rho, xi_rho)`, one record per day. Attributes: `n_days`, `zmin`, `zmax` (default whole column), `source_files`. The `ocean_time` coordinate covers the days in the month.
+- Var `pea` (J m-3), dims `(ocean_time, eta_rho, xi_rho)`, one record per day. Attributes: `n_days`, `zmin`, `zmax` (default whole column), `ref` (`ts` default; files made earlier or with `--ref rho` use mean-density reference, the latter named `pea_<run>_<YYYY-MM>_rhoref.nc`), `source_files`. The `ocean_time` coordinate covers the days in the month.
 - The anomaly can be computed afterwards: `pea_run.pea - pea_wakeref.pea`, aligned on `ocean_time`. Then average over time, weighting by number of days. 
 
 

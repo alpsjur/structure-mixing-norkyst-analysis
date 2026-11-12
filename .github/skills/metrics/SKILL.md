@@ -24,7 +24,8 @@ This file contains decisions for *how* to compute things.
 ## Metrics
 
 ### Potential energy anomaly (PEA)
-- Standard definition: `PEA = (1/H) * integral_{-H}^{0} (rho_mean - rho) * g * z dz`, `rho_mean = (1/H) * integral rho dz`. Units J m-3. Higher = more stratified.
+- Definition: `PEA = (1/H) * integral_{-H}^{0} (rho_mix - rho) * g * z dz`. Units J m-3. Higher = more stratified.
+- Reference (mixed) state: default `ref="ts"`, `rho_mix = rho(mean SA, mean CT)` (depth-weighted means of the conserved quantities, evaluated at p=0), which includes cabbeling. The classical `ref="rho"` (`rho_mix = (1/H) * integral rho dz`) is available as a variant. Difference (wakeref, whole column): ~1-2 % on the shelf and for h < 1000 m, but ~-45 % for h > 1000 m (PEA_ts lower), since it scales with column depth.
 - Use density calculated from `temp` (potential temperature) and `salt` (practical salinity). ROMS runs with `NONLIN_EOS` (Jackett & McDougall 1995, `rho0 = 1025`). Using TEOS-10 (`gsw`) is accepted: small differences are OK for PEA. If using `gsw`, convert first (`SA = gsw.SA_from_SP`, `CT = gsw.CT_from_pt`) and use pressure from rho-level depth (`gsw.p_from_z`) only for the `SA` conversion. Evaluate density at the surface pressure (`gsw.rho(SA, CT, 0)`, potential density), otherwise compressibility gives a mixed column a nonzero PEA that grows with depth. Do not pass raw `temp`/`salt` to `gsw.rho`.
 - Default integration range: the whole water column (bottom to `zeta`). Make the range a function argument (`zmin`, `zmax`) because this choice may change after seeing results.
 - Mask land with `mask_rho`.
