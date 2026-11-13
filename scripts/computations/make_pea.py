@@ -58,8 +58,8 @@ def main():
         with xr.open_dataset(run_t[t]) as ds:
             fields.append(pea(ds, zmin=a.zmin, zmax=a.zmax, slab=a.eta_slab, ref=a.ref).values.astype("float32"))
             lon, lat = ds.lon_rho.load(), ds.lat_rho.load()
-        print(f"  {i + 1}/{n} done", end="\r")
-    print()
+        #print(f"  {i + 1}/{n} done", end="\r")
+    #print()
 
     res = xr.Dataset(
         {"pea": (("ocean_time", "eta_rho", "xi_rho"), np.stack(fields),
