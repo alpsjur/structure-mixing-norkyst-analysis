@@ -49,8 +49,15 @@ def main():
     print(f"{a.run} {a.month}: {n} common files, "
           f"{np.datetime64(int(times[0]), 's')} to {np.datetime64(int(times[-1]), 's')}")
 
-    run_ds = [xr.open_dataset(run_t[t], decode_times=False) for t in times]
-    ref_ds = [xr.open_dataset(ref_t[t], decode_times=False) for t in times]
+    # Files are opened and closed per read, so no file handles/HDF5 caches pile up
+    run_ds = [run_t[t] for t in times]
+    ref_ds = [ref_t[t] for t in times]
+    with xr.open_dataset(run_ds[0], decode_times=False) as d0:
+        time_attrs = dict(d0.ocean_time.attrs)
+
+    def read(path, var, ed, sl):
+        with xr.open_dataset(path, decode_times=False) as ds:
+            return ds[var].isel(ocean_time=0, **{ed: sl}).values
 
     tmid = np.mean(times)
     os.makedirs(a.outdir, exist_ok=True)
@@ -64,7 +71,8 @@ def main():
         "reference_files": " ".join(os.path.basename(ref_t[t]) for t in times),
     }
     for i, var in enumerate(a.variables):
-        tmpl = run_ds[0][var].isel(ocean_time=0)
+        with xr.open_dataset(run_ds[0], decode_times=False) as d0:
+            tmpl = d0[var].isel(ocean_time=0).load()
         ed = eta_dim(tmpl)
         neta = tmpl.sizes[ed]
         mean = np.empty(tmpl.shape, dtype=np.float32)
@@ -73,8 +81,7 @@ def main():
             sl = slice(s, min(s + a.eta_slab, neta))
             acc = 0.0
             for r, w in zip(run_ds, ref_ds):
-                acc = acc + (r[var].isel(ocean_time=0, **{ed: sl}).values.astype(np.float64)
-                             - w[var].isel(ocean_time=0, **{ed: sl}).values)
+                acc = acc + (read(r, var, ed, sl).astype(np.float64) - read(w, var, ed, sl))
             idx = [slice(None)] * mean.ndim
             idx[ax] = sl
             mean[tuple(idx)] = acc / n
@@ -86,7 +93,7 @@ def main():
                           coords={k: v for k, v in tmpl.coords.items() if k != "ocean_time"},
                           attrs=attrs)
         res = xr.Dataset({var: da}).assign_coords(
-            ocean_time=("ocean_time", [tmid], run_ds[0].ocean_time.attrs))
+            ocean_time=("ocean_time", [tmid], time_attrs))
         res.attrs = gattrs
         enc = {var: {"zlib": True, "complevel": 4, "dtype": "float32", "_FillValue": np.float32(np.nan)}}
         # written per variable so memory stays bounded
