@@ -35,6 +35,8 @@ def main():
     p.add_argument("month", help="YYYY-MM")
     p.add_argument("--zmin", type=float, default=None, help="lower integration limit (m, negative down)")
     p.add_argument("--zmax", type=float, default=None, help="upper integration limit (m, relative to surface)")
+    p.add_argument("--ref", choices=["ts", "rho"], default="ts",
+                   help="mixed reference state: rho(mean SA, mean CT) or mean rho (file name gets _rhoref)")
     p.add_argument("--max-files", type=int, default=None,
                    help="use only the first N files of the month (testing)")
     p.add_argument("--eta-slab", type=int, default=ETA_SLAB)
@@ -54,7 +56,7 @@ def main():
     fields = []
     for i, t in enumerate(times):
         with xr.open_dataset(run_t[t]) as ds:
-            fields.append(pea(ds, zmin=a.zmin, zmax=a.zmax, slab=a.eta_slab).values.astype("float32"))
+            fields.append(pea(ds, zmin=a.zmin, zmax=a.zmax, slab=a.eta_slab, ref=a.ref).values.astype("float32"))
             lon, lat = ds.lon_rho.load(), ds.lat_rho.load()
         print(f"  {i + 1}/{n} done", end="\r")
     print()
@@ -68,13 +70,15 @@ def main():
         attrs={
             "title": f"Daily PEA, {a.run}, {a.month}",
             "n_days": n,
+            "ref": a.ref,
             "zmin": "bottom" if a.zmin is None else a.zmin,
             "zmax": "surface" if a.zmax is None else a.zmax,
             "source_files": " ".join(os.path.basename(run_t[t]) for t in times),
         },
     )
     os.makedirs(a.outdir, exist_ok=True)
-    fname = f"{a.outdir}/pea_{a.run}_{a.month}.nc"
+    suffix = "" if a.ref == "ts" else "_rhoref"
+    fname = f"{a.outdir}/pea_{a.run}_{a.month}{suffix}.nc"
     enc = {"pea": {"zlib": True, "complevel": 4, "dtype": "float32", "_FillValue": np.float32(np.nan)}}
     res.to_netcdf(fname, encoding=enc)
     print("wrote", fname)
