@@ -65,8 +65,8 @@ def main():
             idx = [slice(None)] * mean.ndim
             idx[ax] = sl
             mean[tuple(idx)] = acc / n
-            print(f"  {var}: {sl.stop}/{neta}", end="\r")
-        print()
+            #print(f"  {var}: {sl.stop}/{neta}", end="\r")
+        #print()
         attrs = {k: v for k, v in tmpl.attrs.items() if k != "_FillValue"}
         attrs["long_name"] = f"monthly mean of " + attrs.get("long_name", var)
         out[var] = xr.DataArray(mean[None], dims=("ocean_time",) + tmpl.dims,

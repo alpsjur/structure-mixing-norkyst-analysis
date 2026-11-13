@@ -61,8 +61,8 @@ def main():
     for i, t in enumerate(times):
         with xr.open_dataset(run_t[t]) as ds:
             days.append(current(ds, names, slab=a.eta_slab).astype("float32").load())
-        print(f"  {i + 1}/{n} done", end="\r")
-    print()
+        #print(f"  {i + 1}/{n} done", end="\r")
+    #print()
 
     res = xr.concat(days, dim="ocean_time")
     res = res.assign_coords(ocean_time=("ocean_time", np.array(times, dtype="float64"),
