@@ -23,7 +23,7 @@ from analysis.io import OUTDIR, eta_dim, file_times, month_of
 
 # ---- settings (override on the command line) -------------------------------
 VARIABLES = ["temp", "salt", "u", "v", "w", "zeta", "ubar", "vbar"]
-ETA_SLAB = 400  # eta rows read at once; increase on HPC
+ETA_SLAB = 100  # eta rows read at once; increase if memory allows
 # -----------------------------------------------------------------------------
 
 
@@ -52,8 +52,18 @@ def main():
     run_ds = [xr.open_dataset(run_t[t], decode_times=False) for t in times]
     ref_ds = [xr.open_dataset(ref_t[t], decode_times=False) for t in times]
 
-    out = {}
-    for var in a.variables:
+    tmid = np.mean(times)
+    os.makedirs(a.outdir, exist_ok=True)
+    fname = f"{a.outdir}/anom_{a.run}_{a.month}.nc"
+    gattrs = {
+        "title": f"Monthly mean anomalies {a.run} - {a.ref}, {a.month}",
+        "n_days": n,
+        "first_ocean_time": times[0],
+        "last_ocean_time": times[-1],
+        "source_files": " ".join(os.path.basename(run_t[t]) for t in times),
+        "reference_files": " ".join(os.path.basename(ref_t[t]) for t in times),
+    }
+    for i, var in enumerate(a.variables):
         tmpl = run_ds[0][var].isel(ocean_time=0)
         ed = eta_dim(tmpl)
         neta = tmpl.sizes[ed]
@@ -72,25 +82,16 @@ def main():
         print()
         attrs = {k: v for k, v in tmpl.attrs.items() if k != "_FillValue"}
         attrs["long_name"] = f"monthly mean anomaly ({a.run} - {a.ref}) of " + attrs.get("long_name", var)
-        out[var] = xr.DataArray(mean[None], dims=("ocean_time",) + tmpl.dims,
-                                coords={k: v for k, v in tmpl.coords.items() if k != "ocean_time"},
-                                attrs=attrs)
-
-    tmid = np.mean(times)
-    res = xr.Dataset(out).assign_coords(ocean_time=("ocean_time", [tmid], run_ds[0].ocean_time.attrs))
-    res.attrs = {
-        "title": f"Monthly mean anomalies {a.run} - {a.ref}, {a.month}",
-        "n_days": n,
-        "first_ocean_time": times[0],
-        "last_ocean_time": times[-1],
-        "source_files": " ".join(os.path.basename(run_t[t]) for t in times),
-        "reference_files": " ".join(os.path.basename(ref_t[t]) for t in times),
-    }
-    os.makedirs(a.outdir, exist_ok=True)
-    fname = f"{a.outdir}/anom_{a.run}_{a.month}.nc"
-    enc = {v: {"zlib": True, "complevel": 4, "dtype": "float32", "_FillValue": np.float32(np.nan)}
-           for v in res.data_vars}
-    res.to_netcdf(fname, encoding=enc)
+        da = xr.DataArray(mean[None], dims=("ocean_time",) + tmpl.dims,
+                          coords={k: v for k, v in tmpl.coords.items() if k != "ocean_time"},
+                          attrs=attrs)
+        res = xr.Dataset({var: da}).assign_coords(
+            ocean_time=("ocean_time", [tmid], run_ds[0].ocean_time.attrs))
+        res.attrs = gattrs
+        enc = {var: {"zlib": True, "complevel": 4, "dtype": "float32", "_FillValue": np.float32(np.nan)}}
+        # written per variable so memory stays bounded
+        res.to_netcdf(fname, mode="w" if i == 0 else "a", encoding=enc)
+        del mean, da, res
     print("wrote", fname)
 
 
