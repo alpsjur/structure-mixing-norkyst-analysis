@@ -35,10 +35,11 @@ This file contains decisions for *how* to compute things.
 ### Speed
 - Interpolate `u` and `v` to rho points, then `speed = sqrt(u**2 + v**2)`.
 - Speed is saved as the mean over a depth range; calculate the speed for each layer, then calculate the mean over the depth range. Thickness `H` stored so ranges can be combined.
+- Matching range per run: semisub uses `0_25`; spar uses 0-130 m, i.e. `0_25` and `25_130` combined as `sum(speed_r * H_r) / sum(H_r)` (NaN where `H = 0` counts as zero weight; NaN if total `H` is 0). Combine per day, then average.
 
 ### Velocity
 - Velocity refers to the vector (u, v).
-- Velocity is saved as the mean over a depth range; calculate the mean of `u` and `v` individually over the depth range, then store as `ubar` and `vbar`. Do not rotate the vector. Thickness `H` stored so ranges can be combined. 
+- Velocity is saved as the mean over a depth range; calculate the mean of `u` and `v` individually over the depth range, then store as `ubar` and `vbar`. Do not rotate the vector when storing. Thickness `H` stored so ranges can be combined. To show east/north, rotate afterwards with `angle` (in the avg files, not the processed ones): `east = u cos(angle) - v sin(angle)`, `north = u sin(angle) + v cos(angle)`; the grid is rotated, so grid u/v are not east/north.
 
 ### Current 
 - Refers to the combination of speed and velocity.
@@ -50,6 +51,9 @@ This file contains decisions for *how* to compute things.
 ### TKE
 - `tke` is on `s_w` in the raw `his` files (not in `avg` files or processed files).
 - No precomputed TKE products yet.
+
+### Wind-farm means
+- Farm masks: `<farm>` in `windfarm_masks.nc` (six farms: Nordavind_D, Nordavind_C, Nordvest_C, Sorvest_F, Vestavind_B, Vestavind_F; `<farm>_sectors` are for sector analysis). Daily farm mean = NaN-aware mean over mask cells (all cells weighted equally) of the daily field; slice to the mask bounding box before loading.
 
 ## Anomalies
 - Response = run minus `wakeref`: `spar - wakeref`, `semisub - wakeref`, on identical timestamps.

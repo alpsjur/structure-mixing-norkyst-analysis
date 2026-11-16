@@ -29,5 +29,5 @@ Location: `/lustre/storeB/project/nwp/havvind/structure_mixing/processed/` (sibl
 ## Daily depth-range mean current files: `current_<run>_<YYYY-MM>.nc`
 - Live in subfolder `current/` within the processed data directory.
 - Made by `scripts/computations/make_current.py` using `analysis/current.py`, one file per run (incl. wakeref) and month.
-- Two depth ranges below the surface: `0_25` (semisub extent) and `25_130` (down to spar extent). Per range: `ubar_<r>`, `vbar_<r>` (mean u, v at rho points, not rotated), `speed_<r>` (mean of sqrt(u2+v2)), `H_<r>` (water thickness inside the range, m; 0 where shallower, then means are NaN). Dims `(ocean_time, eta_rho, xi_rho)`, one record per day. Attributes: `n_days`, `ranges`, `source_files`.
+- Two depth ranges below the surface: `0_25` (semisub extent) and `25_130` (down to spar extent). Per range: `ubar_<r>`, `vbar_<r>` (mean u, v at rho points, not rotated), `speed_<r>` (mean of sqrt(u2+v2)), `H_<r>` (water thickness inside the range, m; 0 where shallower, then means are NaN). Dims `(ocean_time, eta_rho, xi_rho)`, one record per day. Attributes: `n_days`, `ranges`, `source_files`. Available for all runs for 2022-02 to 2022-08 (Feb starts 2 Feb), like the PEA files. To get the spar range (0-130 m) combine the two ranges weighted by `H` (see `metrics`).
 

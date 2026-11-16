@@ -28,7 +28,12 @@ description: Plotting conventions for the wind-farm mixing analysis.
 
 ## Output
 - Save to `figures/<subfolder>/` as PNG at 300 dpi (`save_fig` in `map_example.py` creates the folder). Only save as PDF if specifically asked to (pass `PDF=True` to `save_fig` in `map_example.py`). 
-- Use subfolders by topic: `grid` (bathymetry, wind-farm layout), `pea` (potential energy anomaly); `scratch` (quick looks, the `plot_map` default); add new ones per variable/topic (e.g. `currents`, `tke`). No figures directly in `figures/`.
+- Use subfolders by topic: `grid` (bathymetry, wind-farm layout); `<variable>_map` and `<variable>_timeseries` for maps and farm time series, with one folder per PEA range (`pea_map`, `pea50_map`, `pea100_map`, `pea150_map`, `pea_timeseries`, `pea50_timeseries`, ..., `pea_comparison_map`) and `current_map`, `current_timeseries`; `scratch` (quick looks, the `plot_map` default); add new ones per variable/topic (e.g. `tke_map`). No figures directly in `figures/`.
 - Multi-panel maps: one `draw_map` per panel on `plt.subplots(..., subplot_kw={"projection": ccrs.NorthPolarStereo()})`; panels that show the same quantity on the same scale share one vertical colorbar (`fig.colorbar(pcm, ax=[ax1, ax2])`), a difference panel gets its own.
-- Name: `<variable>_<run>_<period>.png`, e.g. `figures/pea/pea_spar_2022-07.png`. Anomalies: `<variable>_<run>-minus-wakeref_<period>.png`.
+- Name: `<variable>_<run>_<period>.png`, e.g. `figures/pea_map/pea_spar_2022-07.png`. Whole-period mean: `<variable>_<run>_whole.png`; first time step: `<variable>_<run>_first.png`. Anomalies: `<variable>_<run>-minus-wakeref_<period>.png`.
 
+
+## Standard figure sets
+- Map figures: 3 panels (run | wakeref | run - wakeref); run and wakeref share the colour scale and colorbar, the difference is taken per day then averaged. Monthly means are eddy-dominated, so also make whole-period means.
+- Plot each run only over its own structure depth range for current speed: semisub 0-25 m, spar 0-130 m. 
+- Farm time series (`scripts/plotting/*_farm_timeseries.py`): one row per wind farm (mask cells, daily mean), shared time axis; left column run and wakeref overlaid (grey = wakeref, blue = run), right column run - wakeref (red) with a zero line. Folders `<range>_timeseries`, `current_timeseries`.
