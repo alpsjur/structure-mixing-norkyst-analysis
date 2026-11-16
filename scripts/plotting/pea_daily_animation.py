@@ -35,7 +35,7 @@ map_example.MASKS = MASKS
 parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
 parser.add_argument("--runs", nargs="+", default=["spar", "semisub"])
 parser.add_argument("--pea-dir", default=str(Path(OUTDIR) / "pea"))
-parser.add_argument("--outdir", default="figures/pea")
+parser.add_argument("--outdir", default="figures/pea_map")
 parser.add_argument("--max-days", type=int, default=None, help="Limit number of frames (for testing)")
 parser.add_argument("--fps", type=int, default=6)
 parser.add_argument("--dpi", type=int, default=100)
