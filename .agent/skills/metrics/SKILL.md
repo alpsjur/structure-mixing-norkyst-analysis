@@ -45,12 +45,19 @@ This file contains decisions for *how* to compute things.
 - Refers to the combination of speed and velocity.
 - Implementation: `analysis/current.py`. Land/missing `u`, `v` count as zero when interpolating to rho points; results are masked with `mask_rho`.
 
-### Current 
-- Refers to the combination of speed and velocity
+### Turbulence: TKE, GLS, dissipation
+- `tke` and `gls` are on `s_w` in the raw `his` files (3-hourly snapshots; not in `avg` files or processed files). Precomputed daily depth-range means (`tke`, `gls`, `eps`, `H`): see `processed-data` (`analysis/turbulence.py`, `scripts/computations/make_turbulence.py`). `eps` there is the mean of `gls**1.5` per record. Check on the files: `gls_p=2, gls_m=1, gls_n=-0.67, gls_cmu0=0.527`, so `eps = c0^(3+p/n) psi^1.5 ≈ 0.99 psi^1.5`.
+- Layer values: average the two bounding `s_w` interfaces to get a layer value, then depth-mean over the range weighted by `dz` (from `z_w`). Same depth ranges as other metrics; store `H` so ranges can be combined.
+- **TKE**: `tke` in m2 s-2, saved as the depth-mean over a depth range (not the depth-integral).
+- **GLS**: `gls` is the generic length-scale variable psi of the GEN closure. It is used as a turbulence metric directly.
+- **Dissipation**: `epsilon = gls^(3/2)` for the GEN closure (m2 s-3). Note it is nonlinear: epsilon from the mean `gls` is not the mean of epsilon. Say which one is used when reporting.
+- `tke` and `gls` are model scalars, so means are linear (see Anomalies); no per-timestamp computation is needed for them.
 
-### TKE
-- `tke` is on `s_w` in the raw `his` files (not in `avg` files or processed files).
-- No precomputed TKE products yet.
+### Richardson number
+Two definitions are used. Compute both from the 3-hourly `his` fields (`temp, salt, u, v`), not from daily `avg` means, which smooth out the shear and bias Ri high.
+- **Gradient Ri**: `Ri = N2 / S2` on `s_w` interfaces, with `N2 = -(g/rho0) * d(rho)/dz` (density from `temp`, `salt`, see PEA) and `S2 = (du/dz)^2 + (dv/dz)^2` (`u`, `v` interpolated to rho points). Local; Ri < 0.25 is the instability criterion. Heavy-tailed and undefined where `S2 = 0`.
+- **Bulk Ri**: `Ri_b = g * drho/rho0 * dz / (du^2 + dv^2)` with differences across a depth range (default 0-25 m and 25-130 m, top minus bottom of the range). One value per column; robust, good for maps, but depends on the range.
+- Never average Ri arithmetically. Summarise as the mean of `log10(Ri)` and/or the fraction of time with Ri < 0.25. For anomalies, compare `N2` and `S2` (or the log/fraction summaries) rather than differencing Ri.
 
 ### Wind-farm means
 - Farm masks: `<farm>` in `windfarm_masks.nc` (six farms: Nordavind_D, Nordavind_C, Nordvest_C, Sorvest_F, Vestavind_B, Vestavind_F; `<farm>_sectors` are for sector analysis). Daily farm mean = NaN-aware mean over mask cells (all cells weighted equally) of the daily field; slice to the mask bounding box before loading.
@@ -59,8 +66,8 @@ This file contains decisions for *how* to compute things.
 - Response = run minus `wakeref`: `spar - wakeref`, `semisub - wakeref`, on identical timestamps.
 - Fixed `s` levels sit at slightly different depths in the two runs where `zeta` differs: interpolate to fixed z if depth-sensitive.
 - **Linear vs nonlinear:**
-  - Linear quantities (e.g. `temp, salt, u, v, w, zeta`): mean of anomalies = anomaly of means, so the precomputed monthly mean files can be used: see `processed-data`.
-  - Nonlinear quantities (speed, PEA, density, kinetic energy, TKE magnitude): compute per timestamp, difference, then average (if relevant). 
+  - Linear quantities (e.g. `temp, salt, u, v, w, zeta, tke, gls`): mean of anomalies = anomaly of means, so the precomputed monthly mean files can be used: see `processed-data`.
+  - Nonlinear quantities (speed, PEA, density, kinetic energy, dissipation from `gls`, Richardson number): compute per timestamp, difference, then average (if relevant). 
 
 
 ### TS diagrams (farm, monthly)
