@@ -34,8 +34,11 @@ map_example.MASKS = MASKS
 
 parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
 parser.add_argument("--runs", nargs="+", default=["spar", "semisub"])
-parser.add_argument("--pea-dir", default=str(Path(OUTDIR) / "pea"))
-parser.add_argument("--outdir", default="figures/pea_map")
+parser.add_argument("--depth", default="full", choices=["full", "50", "100", "150"],
+                    help="PEA depth range: surface to 50/100/150 m (pea50/...), or whole column (pea)")
+parser.add_argument("--pea-dir", default=None,
+                    help="Directory with PEA files (default: <processed>/pea or pea<depth>)")
+parser.add_argument("--outdir", default=None, help="Default: figures/pea_map, or figures/pea<depth>_map")
 parser.add_argument("--max-days", type=int, default=None, help="Limit number of frames (for testing)")
 parser.add_argument("--fps", type=int, default=6)
 parser.add_argument("--dpi", type=int, default=100)
@@ -43,7 +46,10 @@ parser.add_argument("--sample-stride", type=int, default=10,
                     help="Use every n-th cell in both directions for the difference colour range")
 args = parser.parse_args()
 
-PEA_DIR = Path(args.pea_dir)
+SUBDIR = "pea" if args.depth == "full" else f"pea{args.depth}"
+PEA_DIR = Path(args.pea_dir) if args.pea_dir else Path(OUTDIR) / SUBDIR
+DEPTH_LABEL = "whole column" if args.depth == "full" else f"0-{args.depth} m"
+OUTDIR_FIG = Path(args.outdir) if args.outdir else Path("figures") / f"{SUBDIR}_map"
 LOG_NORM = LogNorm(vmin=1, vmax=1000)  # J m-3; same for all runs and days
 
 
@@ -104,7 +110,7 @@ for run in args.runs:
                  extend="both", shrink=0.8)
     title = fig.suptitle("")
 
-    out = Path(args.outdir)
+    out = OUTDIR_FIG
     out.mkdir(parents=True, exist_ok=True)
     fname = out / f"pea_{run}_daily.mp4"
     writer = FFMpegWriter(fps=args.fps, codec="libx264", extra_args=["-pix_fmt", "yuv420p"])
@@ -115,7 +121,7 @@ for run in args.runs:
             pcm_exp.set_array(np.clip(pe, 1, None))
             pcm_wake.set_array(np.clip(pw, 1, None))
             pcm_diff.set_array(pe - pw)
-            title.set_text(f"Daily PEA, {str(t)[:10]}")
+            title.set_text(f"Daily PEA ({DEPTH_LABEL}), {str(t)[:10]}")
             writer.grab_frame()
             n += 1
     plt.close(fig)
