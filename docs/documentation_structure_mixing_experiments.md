@@ -30,7 +30,7 @@ Note that Sørvest F is shallower than the spar depth. In the `spar` experiment,
 
 ### Ocean mixing parametrization
 The ocean mixing parametrization is based on Rennau et al. (2012), extended to the GLS closure.
-Foundations are modeled as vertical cylinders. In grid cells where foundations are present they (1) exert a drag on the flow, and (2) the kinetic energy removed from the mean flow is added to the GLS turbulence closure as extra turbulent kinetic energy and mixing. The drag coefficient is `STR_CD = 0.63` (as in Rennau et al., 2012) and the GLS closure coefficient is `GLS_C4 = 0.45` (moderate mixing). The full description of the parametrization can be found in
+Foundations are modeled as vertical cylinders. In grid cells where foundations are present they (1) exert a drag on the flow, and (2) the kinetic energy removed from the mean flow is added to the GLS turbulence closure as extra turbulent kinetic energy and mixing. The drag coefficient is `STR_CD = 0.63` (as in Rennau et al., 2012) and the GLS closure coefficient is `GLS_C4 = 0.45` (strong mixing). The full description of the parametrization can be found in
 [README_STRUCTURE_MIXING.md](https://github.com/alpsjur/roms/blob/structure-mixing/README_STRUCTURE_MIXING.md).
 
 The main difference between the two types of foundations, as represented in the parametrization, is their horizontal and vertical extent. The semisubmerible has a larger frontal width per turbine, so it adds stronger drag and mixing, but only in the upper 25 m. The spar has a smaller frontal width but reaches much deeper, affecting a larger part of the water column. 
